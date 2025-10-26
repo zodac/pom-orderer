@@ -20,6 +20,12 @@
     ],
     "main": "./out/extension.js",
     "contributes": {
+        "commands": [
+            {
+                "command": "pom-orderer.reorderPom",
+                "title": "POM Orderer: Reorder pom.xml"
+            }
+        ],
         "languages": [
             {
                 "id": "xml",
@@ -33,12 +39,13 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "pretest": "npm run compile && npm run lint",
         "lint": "eslint src",
-        "test": "tsc -p tsconfig.json && xvfb-run -a npx vscode-test --disable-gpu --no-sandbox 2>/dev/null"
+        "package": "npx tsc && vsce package",
+        "pretest": "npm run compile && npm run lint",
+        "test": "tsc -p tsconfig.json && xvfb-run -a npx vscode-test --disable-gpu --no-sandbox 2>/dev/null",
+        "vscode:prepublish": "npm run compile",
+        "watch": "tsc -watch -p ./"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.10",
