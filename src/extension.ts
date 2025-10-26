@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { XMLParser, XMLBuilder } from "fast-xml-parser";
 
-// Desired order of pom.xml elements
 const ORDER = [
   "modelVersion","parent","groupId","artifactId","version","packaging",
   "name","description","url","inceptionYear","organization","licenses",
@@ -12,29 +11,19 @@ const ORDER = [
 ];
 
 /**
- * Main listener function for onWillSaveTextDocument.
- * Exported for testing.
+ * Reorder a pom.xml string according to ORDER
  */
-export async function onWillSaveDocument(event: vscode.TextDocumentWillSaveEvent) {
-  const document = event.document;
-
-  if (!document.fileName.endsWith("pom.xml")) {
-    return;
-  }
-
-  const xmlText = document.getText();
+function reorderPom(xmlText: string): string {
   const parser = new XMLParser({ ignoreAttributes: false, preserveOrder: true });
   const parsed = parser.parse(xmlText);
 
-  // Find <project> node
   const projectIndex = parsed.findIndex((node: any) => node.hasOwnProperty("project"));
   if (projectIndex === -1) {
-    return;
+    return xmlText;
   }
 
   const projectNode = parsed[projectIndex].project;
 
-  // Reorder direct children according to ORDER
   const orderedChildren: any[] = [];
   for (const key of ORDER) {
     const idx = projectNode.findIndex((child: any) => child.hasOwnProperty(key));
@@ -42,8 +31,6 @@ export async function onWillSaveDocument(event: vscode.TextDocumentWillSaveEvent
       orderedChildren.push(projectNode[idx]);
     }
   }
-
-  // Keep any children not in the list at the end
   for (const child of projectNode) {
     const name = Object.keys(child)[0];
     if (!ORDER.includes(name)) {
@@ -53,28 +40,65 @@ export async function onWillSaveDocument(event: vscode.TextDocumentWillSaveEvent
 
   parsed[projectIndex].project = orderedChildren;
 
-  // Build new XML string
   const builder = new XMLBuilder({ ignoreAttributes: false, preserveOrder: true, format: true, indentBy: "  " });
-  const newXml = builder.build(parsed);
-
-  // Apply edit to the document
-  const fullRange = new vscode.Range(
-    document.positionAt(0),
-    document.positionAt(xmlText.length)
-  );
-
-  event.waitUntil(Promise.resolve([vscode.TextEdit.replace(fullRange, newXml)]));
+  return builder.build(parsed);
 }
 
 /**
- * VS Code extension activation
+ * Main listener function for auto-save
+ */
+export function onWillSaveDocument(event: vscode.TextDocumentWillSaveEvent) {
+  const document = event.document;
+  if (!document.fileName.endsWith("pom.xml")) {
+    return;
+  }
+
+  const xmlText = document.getText();
+  const newXml = reorderPom(xmlText);
+
+  if (newXml !== xmlText) {
+    const fullRange = new vscode.Range(
+      document.positionAt(0),
+      document.positionAt(xmlText.length)
+    );
+    event.waitUntil(Promise.resolve([vscode.TextEdit.replace(fullRange, newXml)]));
+  }
+}
+
+/**
+ * Command for Command Palette
+ */
+async function reorderActivePom() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    return;
+  }
+  const document = editor.document;
+  if (!document.fileName.endsWith("pom.xml")) {
+    return;
+   }
+
+  const xmlText = document.getText();
+  const newXml = reorderPom(xmlText);
+
+  if (newXml !== xmlText) {
+    const fullRange = new vscode.Range(
+      document.positionAt(0),
+      document.positionAt(xmlText.length)
+    );
+    await editor.edit(editBuilder => editBuilder.replace(fullRange, newXml));
+    vscode.window.showInformationMessage("pom.xml reordered!");
+  }
+}
+
+/**
+ * VS Code activation
  */
 export function activate(context: vscode.ExtensionContext) {
-  const disposable = vscode.workspace.onWillSaveTextDocument(onWillSaveDocument);
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(
+    vscode.workspace.onWillSaveTextDocument(onWillSaveDocument),
+    vscode.commands.registerCommand("pom-orderer.reorderPom", reorderActivePom)
+  );
 }
 
-/**
- * VS Code extension deactivation
- */
 export function deactivate() {}
