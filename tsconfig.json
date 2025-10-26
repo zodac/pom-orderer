@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        // ECMAScript target & module system
+        "target": "ES2022",
+        "module": "Node16",
+
+        // Output folder for compiled .js files
+        "outDir": "out",
+        "rootDir": "src",
+
+        // Modern JS libraries
+        "lib": ["ES2022"],
+
+        // Include Node.js, VS Code and mocha test typings
+        "types": ["node", "vscode", "mocha"],
+
+        // Generate sourcemaps for debugging in VS Code
+        "sourceMap": true,
+
+        // Enable strict type checking
+        "strict": true,
+
+        // Match how Node.js resolves modules (important for VS Code extensions)
+        "moduleResolution": "node16",
+
+        // Ensure clean build output
+        "skipLibCheck": true
+    },
+    "include": ["src", "src/test"],
+    "exclude": ["node_modules", ".vscode-test"]
+}

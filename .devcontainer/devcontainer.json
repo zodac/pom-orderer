@@ -1,0 +1,107 @@
+{
+    "name": "[pom-orderer] Dev Container",
+    "build": {
+        "context": "..",
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "azure.mcp.enabled": false,
+                "editor.formatOnSave": false, // Only format files with formatters explicitly configured below
+                "editor.insertSpaces": true,
+                "editor.tabSize": 4,
+                "files.autoSave": "onFocusChange",
+                "files.insertFinalNewline": true,
+                "remote.autoForwardPorts": false,
+                "remote.ignoreLocalPorts": [],
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "workbench.editor.enablePreview": false,
+                "[dockerfile]": {
+                    "editor.defaultFormatter": "ms-azuretools.vscode-containers",
+                    "editor.formatOnSave": true
+                },
+                "[github-actions-workflow]": {
+                    "editor.defaultFormatter": "redhat.vscode-yaml",
+                    "editor.formatOnSave": true,
+                    "editor.tabSize": 2,
+                    "yaml.format.printWidth": 150
+                },
+                "[json]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.formatOnSave": true,
+                    "prettier.printWidth": 150,
+                    "prettier.tabWidth": 4
+                },
+                "[jsonc]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.formatOnSave": true,
+                    "prettier.printWidth": 150,
+                    "prettier.tabWidth": 4
+                },
+                "[markdown]": {
+                    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+                    "editor.formatOnSave": true,
+                    "markdownlint.configFile": "code-quality-config/markdown/.markdownlint.json"
+                },
+                "[shellscript]": {
+                    "editor.defaultFormatter": "mkhl.shfmt",
+                    "editor.formatOnSave": true
+                },
+                "[xml]": {
+                    "editor.defaultFormatter": "redhat.vscode-xml",
+                    "editor.formatOnSave": true,
+                    "xml.format.closingBracketNewLine": false,
+                    "xml.format.enforceQuoteStyle": "preferred",
+                    "xml.format.maxLineWidth": 150,
+                    "xml.format.spaceBeforeEmptyCloseTag": true,
+                    "xml.format.splitAttributes": "alignWithFirstAttr",
+                    "xml.format.splitAttributesIndentSize": 4,
+                    "xml.format.xsiSchemaLocationSplit": "onPair",
+                    "xml.preferences.quoteStyle": "double"
+                },
+                "[yaml]": {
+                    "editor.defaultFormatter": "redhat.vscode-yaml",
+                    "editor.formatOnSave": true,
+                    "editor.tabSize": 2,
+                    "yaml.format.printWidth": 150,
+                    "yaml.validate": false
+                },
+                "files.associations": {
+                    "LICENSE": "plaintext",
+                    "VERSION": "plaintext"
+                }
+            },
+            "extensions": [
+                "davidanson.vscode-markdownlint",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "github.vscode-github-actions",
+                "mkhl.shfmt",
+                "ms-azuretools.vscode-docker",
+                "ms-vscode.extension-test-runner",
+                "ms-vscode.vscode-typescript-tslint-plugin",
+                "redhat.vscode-yaml",
+                "redhat.vscode-xml",
+                "tamasfe.even-better-toml",
+                "timonwong.shellcheck",
+                "vscjava.vscode-java-pack",
+                "waderyan.nodejs-extension-pack"
+            ]
+        }
+    },
+    "forwardPorts": [],
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind",
+        "source=${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached",
+        "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
+    ],
+    "postCreateCommand": "chmod 700 /root/.ssh && chmod 600 /root/.ssh/* && npm install",
+    "remoteUser": "root",
+    "runArgs": ["--init"],
+    "userEnvProbe": "loginInteractiveShell",
+    "workspaceFolder": "/workspace",
+    "containerEnv": {
+        "ELECTRON_DISABLE_GPU": "true",
+        "ELECTRON_ENABLE_LOGGING": "false"    }
+}
