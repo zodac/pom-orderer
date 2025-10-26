@@ -1,5 +1,11 @@
+# IDE
 .vscode/
 .vscode-test/
+
+# Build
 node_modules/
 out/
 package-lock.json
+
+# Generated extension
+*.vsix

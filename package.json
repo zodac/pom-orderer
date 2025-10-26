@@ -1,7 +1,13 @@
 {
     "name": "pom-orderer",
+    "publisher": "net.zodac",
     "displayName": "POM Orderer",
     "description": "Order direct children of <project> in pom.xml according to a standard order on save",
+    "icon": "images/logo.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/zodac/pom-orderer"
+    },
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.105.0"
