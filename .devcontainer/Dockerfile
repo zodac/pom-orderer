@@ -4,9 +4,6 @@ FROM node:25-trixie-slim
 # Set working directory
 WORKDIR /workspace
 
-# Install vsce (VS Code extension CLI) and XML parser dependency globally (for testing/build)
-RUN npm install -g vsce yo generator-code typescript @types/vscode fast-xml-parser
-
 # Install VS Code devcontainer dependencies
 RUN apt-get update && apt-get install -y \
     curl \
@@ -44,8 +41,10 @@ RUN apt-get update && apt-get install -y \
     && \
     rm -rf /var/lib/apt/lists/*
 
-# Expose 3000 for any debugging servers if needed
-EXPOSE 3000
+# Install NPM packages
+COPY package.json .
+RUN npm install --include=dev
+ENV PATH=node_modules/.bin:$PATH
 
 COPY ./.devcontainer/config/.bashrc ./.devcontainer/config/.bash_completion /root/
 

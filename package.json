@@ -19,6 +19,7 @@
         "onWillSaveTextDocument"
     ],
     "main": "./out/extension.js",
+    "type": "module",
     "contributes": {
         "commands": [
             {
@@ -39,26 +40,31 @@
         ]
     },
     "scripts": {
-        "compile": "tsc -p ./",
-        "lint": "eslint src",
+        "compile": "tsc -p tsconfig.json",
+        "lint": "eslint src/",
         "package": "npx tsc && vsce package",
         "pretest": "npm run compile && npm run lint",
-        "test": "tsc -p tsconfig.json && xvfb-run -a npx vscode-test --disable-gpu --no-sandbox 2>/dev/null",
+        "test": "tsx node_modules/.bin/mocha 'src/**/*.spec.ts'",
         "vscode:prepublish": "npm run compile",
-        "watch": "tsc -watch -p ./"
+        "watch": "tsc -watch -p tsconfig.json"
     },
     "devDependencies": {
+        "@eslint/js": "^9.38.0",
         "@types/mocha": "^10.0.10",
-        "@types/node": "22.x",
+        "@types/node": "^24.9.1",
         "@types/vscode": "^1.105.0",
-        "@typescript-eslint/eslint-plugin": "^8.45.0",
-        "@typescript-eslint/parser": "^8.45.0",
-        "@vscode/test-cli": "^0.0.11",
+        "@typescript-eslint/eslint-plugin": "^8.46.2",
+        "@typescript-eslint/parser": "^8.46.2",
+        "@vscode/test-cli": "^0.0.12",
         "@vscode/test-electron": "^2.5.2",
-        "eslint": "^9.36.0",
-        "typescript": "^5.9.3"
-    },
-    "dependencies": {
-        "fast-xml-parser": "^4.5.3"
+        "@vscode/vsce": "^3.6.2",
+        "eslint": "^9.38.0",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-jsdoc": "^61.1.8",
+        "eslint-plugin-node": "^11.1.0",
+        "mocha": "^11.7.5",
+        "tsx": "^4.20.6",
+        "typescript": "^5.9.3",
+        "vscode": "^1.1.34"
     }
 }

@@ -48,6 +48,16 @@
                     "editor.defaultFormatter": "mkhl.shfmt",
                     "editor.formatOnSave": true
                 },
+                "[typescript]": {
+                    "editor.codeActionsOnSave": {
+                        "source.fixAll.eslint": "always"
+                    },
+                    "editor.defaultFormatter": "ms-vscode.vscode-typescript-tslint-plugin",
+                    "editor.formatOnSave": true,
+                    "eslint.packageManager": "npm",
+                    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+                    "eslint.workingDirectories": [{ "mode": "auto" }]
+                },
                 "[xml]": {
                     "editor.defaultFormatter": "redhat.vscode-xml",
                     "editor.formatOnSave": true,
@@ -94,14 +104,15 @@
     "mounts": [
         "source=${localWorkspaceFolder},target=/workspace,type=bind",
         "source=${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached",
-        "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
+        "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached",
+        "source=pom-orderer_node_modules,target=/workspace/node_modules,type=volume"
     ],
-    "postCreateCommand": "chmod 700 /root/.ssh && chmod 600 /root/.ssh/* && npm install",
+    "postCreateCommand": "chmod 700 /root/.ssh && chmod 600 /root/.ssh/*",
     "remoteUser": "root",
-    "runArgs": ["--init"],
     "userEnvProbe": "loginInteractiveShell",
     "workspaceFolder": "/workspace",
     "containerEnv": {
         "ELECTRON_DISABLE_GPU": "true",
-        "ELECTRON_ENABLE_LOGGING": "false"    }
+        "ELECTRON_ENABLE_LOGGING": "false"
+    }
 }
