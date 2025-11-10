@@ -7,12 +7,13 @@
     "customizations": {
         "vscode": {
             "settings": {
-                "azure.mcp.enabled": false,
+                "editor.detectIndentation": false,
                 "editor.formatOnSave": false, // Only format files with formatters explicitly configured below
                 "editor.insertSpaces": true,
                 "editor.tabSize": 4,
                 "files.autoSave": "onFocusChange",
                 "files.insertFinalNewline": true,
+                "redhat.telemetry.enabled": false,
                 "remote.autoForwardPorts": false,
                 "remote.ignoreLocalPorts": [],
                 "terminal.integrated.defaultProfile.linux": "bash",
@@ -26,6 +27,24 @@
                     "editor.formatOnSave": true,
                     "editor.tabSize": 2,
                     "yaml.format.printWidth": 150
+                },
+                "[gitignore]": {
+                    "editor.defaultFormatter": "lkrms.inifmt",
+                    "editor.formatOnSave": true
+                },
+                "[ignore]": {
+                    "editor.defaultFormatter": "lkrms.inifmt",
+                    "editor.formatOnSave": true
+                },
+                "[javascript]": {
+                    "editor.codeActionsOnSave": {
+                        "source.fixAll.eslint": "always"
+                    },
+                    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+                    "editor.formatOnSave": true,
+                    "eslint.packageManager": "npm",
+                    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+                    "eslint.workingDirectories": [{ "mode": "auto" }]
                 },
                 "[json]": {
                     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -42,17 +61,18 @@
                 "[markdown]": {
                     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
                     "editor.formatOnSave": true,
-                    "markdownlint.configFile": "code-quality-config/markdown/.markdownlint.json"
+                    "markdownlint.configFile": "./code-quality-config/markdown/.markdownlint.json"
                 },
                 "[shellscript]": {
-                    "editor.defaultFormatter": "mkhl.shfmt",
+                    "bashBeautify.tabSize": 4,
+                    "editor.defaultFormatter": "shakram02.bash-beautify",
                     "editor.formatOnSave": true
                 },
                 "[typescript]": {
                     "editor.codeActionsOnSave": {
                         "source.fixAll.eslint": "always"
                     },
-                    "editor.defaultFormatter": "ms-vscode.vscode-typescript-tslint-plugin",
+                    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
                     "editor.formatOnSave": true,
                     "eslint.packageManager": "npm",
                     "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
@@ -70,14 +90,9 @@
                     "xml.format.xsiSchemaLocationSplit": "onPair",
                     "xml.preferences.quoteStyle": "double"
                 },
-                "[yaml]": {
-                    "editor.defaultFormatter": "redhat.vscode-yaml",
-                    "editor.formatOnSave": true,
-                    "editor.tabSize": 2,
-                    "yaml.format.printWidth": 150,
-                    "yaml.validate": false
-                },
                 "files.associations": {
+                    ".devcontainer/config/.bashrc": "shellscript",
+                    ".devcontainer/config/.bash_completion": "shellscript",
                     "LICENSE": "plaintext",
                     "VERSION": "plaintext"
                 }
@@ -87,32 +102,25 @@
                 "dbaeumer.vscode-eslint",
                 "esbenp.prettier-vscode",
                 "github.vscode-github-actions",
-                "mkhl.shfmt",
+                "lkrms.inifmt",
                 "ms-azuretools.vscode-docker",
-                "ms-vscode.extension-test-runner",
-                "ms-vscode.vscode-typescript-tslint-plugin",
-                "redhat.vscode-yaml",
                 "redhat.vscode-xml",
-                "tamasfe.even-better-toml",
-                "timonwong.shellcheck",
-                "vscjava.vscode-java-pack",
-                "waderyan.nodejs-extension-pack"
+                "redhat.vscode-yaml",
+                "shakram02.bash-beautify",
+                "timonwong.shellcheck"
             ]
         }
     },
     "forwardPorts": [],
     "mounts": [
-        "source=${localWorkspaceFolder},target=/workspace,type=bind",
+        "source=${localEnv:USERPROFILE}/.bash_history,target=/root/.bash_history,type=bind,consistency=cached",
         "source=${localEnv:USERPROFILE}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached",
         "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind,consistency=cached",
+        "source=${localWorkspaceFolder},target=/workspace,type=bind",
         "source=pom-orderer_node_modules,target=/workspace/node_modules,type=volume"
     ],
-    "postCreateCommand": "chmod 700 /root/.ssh && chmod 600 /root/.ssh/*",
+    "postCreateCommand": "chmod +x .devcontainer/scripts/start.sh && .devcontainer/scripts/start.sh",
     "remoteUser": "root",
     "userEnvProbe": "loginInteractiveShell",
-    "workspaceFolder": "/workspace",
-    "containerEnv": {
-        "ELECTRON_DISABLE_GPU": "true",
-        "ELECTRON_ENABLE_LOGGING": "false"
-    }
+    "workspaceFolder": "/workspace"
 }

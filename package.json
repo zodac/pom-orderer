@@ -1,6 +1,6 @@
 {
     "name": "pom-orderer",
-    "publisher": "net.zodac",
+    "publisher": "net-zodac",
     "displayName": "POM Orderer",
     "description": "Order direct children of <project> in pom.xml according to a standard order on save",
     "icon": "images/logo.png",
@@ -23,8 +23,8 @@
     "contributes": {
         "commands": [
             {
-                "command": "pom-orderer.reorderPom",
-                "title": "POM Orderer: Reorder pom.xml"
+                "command": "pom-orderer.orderPom",
+                "title": "POM Orderer: Order pom.xml"
             }
         ],
         "languages": [
@@ -57,14 +57,13 @@
         "@typescript-eslint/parser": "^8.46.2",
         "@vscode/test-cli": "^0.0.12",
         "@vscode/test-electron": "^2.5.2",
-        "@vscode/vsce": "^3.6.2",
+        "@vscode/vsce": "^3.7.0",
         "eslint": "^9.38.0",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-jsdoc": "^61.1.8",
         "eslint-plugin-node": "^11.1.0",
         "mocha": "^11.7.5",
         "tsx": "^4.20.6",
-        "typescript": "^5.9.3",
-        "vscode": "^1.1.34"
+        "typescript": "^5.9.3"
     }
 }

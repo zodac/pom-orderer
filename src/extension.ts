@@ -1,61 +1,7 @@
 import * as vscode from "vscode";
+import { PomOrderer } from "./pom-orderer";
 
-// TODO: Split out the pom-sorting logic from the VScode extension logic, then test
-
-// Desired order of pom.xml elements
-const ORDER = [
-  "modelVersion","parent","groupId","artifactId","version","packaging",
-  "name","description","url","inceptionYear","organization","licenses",
-  "developers","contributors","mailingLists","prerequisites","modules",
-  "scm","issueManagement","ciManagement","distributionManagement","properties",
-  "dependencyManagement","dependencies","repositories","pluginRepositories",
-  "build","reporting","profiles",
-];
-
-/**
- * Reorder <project> children while preserving whitespace
- */
-function reorderPomPreserveWhitespace(xmlText: string): string {
-  // Match the <project>...</project> block
-  const projectMatch = xmlText.match(/<project\b[^>]*>([\s\S]*?)<\/project>/);
-  if (!projectMatch) {
-    return xmlText;
-  }
-
-  const projectContent = projectMatch[1];
-
-  // Match all top-level elements inside <project> (including whitespace)
-  const childRegex = /(\s*<(\w+)[^>]*>[\s\S]*?<\/\2>)/g;
-  const children: Array<{ name: string; text: string }> = [];
-  let match;
-  while ((match = childRegex.exec(projectContent)) !== null) {
-    const text = match[1];
-    const name = match[2];
-    children.push({ name, text });
-  }
-
-  // Separate into ordered and unordered children
-  const orderedChildren: string[] = [];
-  const unorderedChildren: string[] = [];
-
-  for (const key of ORDER) {
-    for (const child of children) {
-      if (child.name === key) {
-        orderedChildren.push(child.text);
-      }
-    }
-  }
-  for (const child of children) {
-    if (!ORDER.includes(child.name)) {
-      unorderedChildren.push(child.text);
-    }
-  }
-
-  const newProjectContent = orderedChildren.concat(unorderedChildren).join("");
-
-  // Replace old project content
-  return xmlText.replace(projectMatch[1], newProjectContent);
-}
+const pomReorderer = new PomOrderer();
 
 /**
  * Main listener function for auto-save
@@ -67,7 +13,7 @@ export function onWillSaveDocument(event: vscode.TextDocumentWillSaveEvent): voi
   }
 
   const xmlText = document.getText();
-  const newXml = reorderPomPreserveWhitespace(xmlText);
+  const newXml = pomReorderer.order(xmlText);
 
   if (newXml !== xmlText) {
     const fullRange = new vscode.Range(
@@ -81,7 +27,7 @@ export function onWillSaveDocument(event: vscode.TextDocumentWillSaveEvent): voi
 /**
  * Command for Command Palette
  */
-async function reorderActivePom(): Promise<void> {
+async function orderActivePom(): Promise<void> {
   const editor = vscode.window.activeTextEditor;
   if (!editor) {
     return;
@@ -93,7 +39,7 @@ async function reorderActivePom(): Promise<void> {
   }
 
   const xmlText = document.getText();
-  const newXml = reorderPomPreserveWhitespace(xmlText);
+  const newXml = pomReorderer.order(xmlText);
 
   if (newXml !== xmlText) {
     const fullRange = new vscode.Range(
@@ -111,7 +57,7 @@ async function reorderActivePom(): Promise<void> {
 export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     vscode.workspace.onWillSaveTextDocument(onWillSaveDocument),
-    vscode.commands.registerCommand("pom-orderer.reorderPom", reorderActivePom),
+    vscode.commands.registerCommand("pom-orderer.orderPom", orderActivePom),
   );
 }
 
